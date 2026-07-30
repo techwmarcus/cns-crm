@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: project-service
-  namespace: construction-crm
+  namespace: prod
   labels:
     app: project-service
 spec:
