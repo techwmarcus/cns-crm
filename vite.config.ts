@@ -15,15 +15,10 @@ export default defineConfig({
     include: ['react', 'react-dom', 'react-router-dom'],
   },
   server: {
-    host: true, // Allows the application to listen on all container/network interfaces
-    allowedHosts: [
-      // 1. Authorize your exact AWS Load Balancer domain string
-      'a277e5d71d1db4a1abdeb27929e42dd6-64771444.us-west-1.elb.amazonaws.com'
-    ],
+    host: true, // Listens on all container addresses inside Kubernetes
+    allowedHosts: true, // ✅ Use boolean true to dynamically accept any incoming host header
     hmr: {
-      // 2. Directs the hot-reloading WebSocket connection to use the same host
-      host: 'a277e5d71d1db4a1abdeb27929e42dd6-64771444.us-west-1.elb.amazonaws.com',
-      clientPort: 80, 
+      clientPort: 80,
     }
   }
 });
