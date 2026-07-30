@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '@/src/store/useAppStore';
 import { cn } from '@/src/lib/utils';
-import { motion } from 'motion/react';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -27,10 +26,11 @@ export function Sidebar() {
   const location = useLocation();
 
   return (
-    <motion.div 
-      initial={false}
-      animate={{ width: sidebarOpen ? 256 : 80 }}
-      className="h-screen bg-[#0F0F12] border-r border-slate-800 flex flex-col relative flex-shrink-0"
+    <div
+      className={cn(
+        'h-screen bg-[#0F0F12] border-r border-slate-800 flex flex-col relative flex-shrink-0 transition-all duration-200',
+        sidebarOpen ? 'w-64' : 'w-20'
+      )}
     >
       <div className="h-16 flex items-center px-4 border-b border-slate-800">
         <div className="flex items-center gap-3 overflow-hidden whitespace-nowrap">
@@ -91,13 +91,9 @@ export function Sidebar() {
           onClick={toggleSidebar}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-slate-400 hover:bg-slate-800 hover:text-white group mt-2"
         >
-          <motion.div
-            animate={{ rotate: sidebarOpen ? 0 : 180 }}
-            transition={{ duration: 0.2 }}
-            className="flex-shrink-0"
-          >
+          <div className={cn('flex-shrink-0 transition-transform duration-200', !sidebarOpen && 'rotate-180')}>
             <ChevronLeft className="w-5 h-5 group-hover:text-white" />
-          </motion.div>
+          </div>
           <span className={cn(
             "whitespace-nowrap transition-opacity duration-200",
             !sidebarOpen && "opacity-0 w-0 hidden"
@@ -106,6 +102,6 @@ export function Sidebar() {
           </span>
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
