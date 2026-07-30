@@ -53,7 +53,7 @@ export function Dashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Executive Dashboard</h1>
+          <h1 className="text-2xl font-bold text-white">Main Dashboard</h1>
           <p className="text-sm text-slate-400 mt-1">Welcome back. Here's what's happening across your projects today.</p>
         </div>
         <div className="flex items-center gap-3">
