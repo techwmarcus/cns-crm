@@ -1,15 +1,20 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
+import { fileURLToPath, URL } from 'node:url';
+
+const rootDir = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      '@': rootDir,
       // Hard-lock every dependency to share one single instance of React
-      'react': path.resolve(__dirname, './node_modules/react'),
-      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
-      'react-router-dom': path.resolve(__dirname, './node_modules/react-router-dom'),
+      'react': path.resolve(rootDir, './node_modules/react'),
+      'react-dom': path.resolve(rootDir, './node_modules/react-dom'),
+      'react-router-dom': path.resolve(rootDir, './node_modules/react-router-dom'),
     },
   },
   optimizeDeps: {
