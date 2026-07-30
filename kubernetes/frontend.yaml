@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: techwmarcus/cns-crm:v3
+        image: techwmarcus/cns-crm:v4
         ports:
         - containerPort: 80
       
