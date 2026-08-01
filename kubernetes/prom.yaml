@@ -4,7 +4,8 @@ metadata:
   name: frontend-service-monitor
   namespace: prod
   labels:
-    app: frontend
+    release: prometheus
+    app: metrics
 spec:
   selector:
     matchLabels:
