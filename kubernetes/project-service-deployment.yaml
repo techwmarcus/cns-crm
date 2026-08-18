@@ -27,7 +27,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: project-service
-          image: techwmarcus/dotnet-project-service:v1
+          image: techwmarcus/dotnet:v1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
