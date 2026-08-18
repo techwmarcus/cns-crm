@@ -28,7 +28,7 @@ spec:
       containers:
         - name: project-service
           image: techwmarcus/dotnet:v1
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
@@ -39,8 +39,6 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
-            - name: ASPNETCORE_URLS
-              value: "http://+:8080;http://+:8081"
             - name: ConnectionStrings__DefaultConnection
               valueFrom:
                 secretKeyRef:
@@ -63,11 +61,11 @@ spec:
                   key: audience
           resources:
             requests:
-              memory: "256Mi"
+              memory: "512Mi"
               cpu: "250m"
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "1Gi"
+              cpu: "1000m"
           livenessProbe:
             httpGet:
               path: /health/live
@@ -87,7 +85,7 @@ spec:
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
+          whenUnsatisfiable: ScheduleAnyway
           labelSelector:
             matchLabels:
               app: project-service
