@@ -27,7 +27,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: project-service
-          image: techwmarcus/cns-crm-project-service:latest
+          image: techwmarcus/dotnet-project-service:v1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
