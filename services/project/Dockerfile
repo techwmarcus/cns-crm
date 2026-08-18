@@ -3,7 +3,7 @@ WORKDIR /src
 
 COPY . .
 
-WORKDIR /src/services/project/ProjectService.Api
+WORKDIR /src/ProjectService.Api
 RUN dotnet restore "ProjectService.Api.csproj"
 RUN dotnet publish "ProjectService.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
@@ -11,6 +11,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
+
+RUN apk add --no-cache icu-libs
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser

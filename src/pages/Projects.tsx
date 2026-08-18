@@ -1,54 +1,23 @@
+import { useEffect } from 'react';
 import { Search, Filter, Plus, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
-
-const projects = [
-  {
-    id: 'PRJ-1024',
-    name: 'Downtown Commercial Plaza',
-    client: 'Summit Group',
-    manager: 'Alex Carter',
-    status: 'Active',
-    budget: 4500000,
-    spent: 3100000,
-    progress: 68,
-    dueDate: 'Oct 15, 2026',
-  },
-  {
-    id: 'PRJ-1025',
-    name: 'Westside Residential Complex',
-    client: 'Horizon Dev',
-    manager: 'Sarah Jenkins',
-    status: 'Delayed',
-    budget: 12000000,
-    spent: 4500000,
-    progress: 34,
-    dueDate: 'Dec 01, 2026',
-  },
-  {
-    id: 'PRJ-1026',
-    name: 'Medical Center Expansion',
-    client: 'City Health',
-    manager: 'Mike Ross',
-    status: 'Active',
-    budget: 8500000,
-    spent: 7800000,
-    progress: 89,
-    dueDate: 'Aug 20, 2026',
-  },
-  {
-    id: 'PRJ-1027',
-    name: 'Highway 99 Overpass',
-    client: 'State DOT',
-    manager: 'David Chen',
-    status: 'Planning',
-    budget: 22000000,
-    spent: 150000,
-    progress: 5,
-    dueDate: 'Mar 10, 2028',
-  }
-];
+import { useAppStore } from '../store/useAppStore';
 
 export function Projects() {
+  const { projects, fetchProjects, loading, error } = useAppStore();
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
+  if (loading) {
+    return <div className="p-6 text-slate-300">Loading projects...</div>;
+  }
+
+  if (error) {
+    return <div className="p-6 text-red-500">Error: {error}</div>;
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -99,10 +68,10 @@ export function Projects() {
                 <tr key={project.id} className="hover:bg-slate-800/30 transition-colors group cursor-pointer text-slate-300">
                   <td className="p-4">
                     <div className="font-medium text-slate-200">{project.name}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">{project.id} • Due {project.dueDate}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{project.id.substring(0, 8)} • Due {project.expectedEndDate || 'TBD'}</div>
                   </td>
                   <td className="p-4 hidden md:table-cell text-slate-400">
-                    {project.client}
+                    {project.clientId}
                   </td>
                   <td className="p-4">
                     <span className={cn(
@@ -130,9 +99,9 @@ export function Projects() {
                     </div>
                   </td>
                   <td className="p-4 text-right">
-                    <div className="font-medium text-slate-200">${(project.budget / 1000000).toFixed(1)}M</div>
+                    <div className="font-medium text-slate-200">${(project.totalBudget / 1000000).toFixed(1)}M</div>
                     <div className="text-xs text-slate-500 mt-0.5">
-                      ${(project.spent / 1000000).toFixed(1)}M spent
+                      ${(project.totalSpent / 1000000).toFixed(1)}M spent
                     </div>
                   </td>
                   <td className="p-4 text-right">

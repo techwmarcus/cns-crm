@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { 
   TrendingUp, 
   Wallet, 
@@ -10,44 +11,36 @@ import {
   CloudLightning
 } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
-
-const revenueData = [
-  { month: 'Jan', revenue: 450000, expenses: 320000 },
-  { month: 'Feb', revenue: 520000, expenses: 380000 },
-  { month: 'Mar', revenue: 480000, expenses: 350000 },
-  { month: 'Apr', revenue: 610000, expenses: 410000 },
-  { month: 'May', revenue: 590000, expenses: 430000 },
-  { month: 'Jun', revenue: 750000, expenses: 480000 },
-];
-
-const activeProjects = [
-  {
-    id: 'PRJ-1024',
-    name: 'Downtown Commercial Plaza',
-    client: 'Summit Group',
-    progress: 68,
-    status: 'On Track',
-    health: 'Good'
-  },
-  {
-    id: 'PRJ-1025',
-    name: 'Westside Residential Complex',
-    client: 'Horizon Dev',
-    progress: 34,
-    status: 'Delayed',
-    health: 'At Risk'
-  },
-  {
-    id: 'PRJ-1026',
-    name: 'Medical Center Expansion',
-    client: 'City Health',
-    progress: 89,
-    status: 'On Track',
-    health: 'Good'
-  }
-];
+import { useAppStore } from '../store/useAppStore';
 
 export function Dashboard() {
+  const { clients, projects, fetchClients, fetchProjects, loading } = useAppStore();
+
+  useEffect(() => {
+    fetchClients();
+    fetchProjects();
+  }, [fetchClients, fetchProjects]);
+
+  // Calculate metrics from real data
+  const totalRevenue = clients.reduce((sum, c) => sum + c.totalRevenue, 0);
+  const activeProjects = projects.filter(p => p.status === 'Active').length;
+  const delayedProjects = projects.filter(p => p.status === 'Delayed').length;
+  const totalBudget = projects.reduce((sum, p) => sum + p.totalBudget, 0);
+  const totalSpent = projects.reduce((sum, p) => sum + p.totalSpent, 0);
+
+  const revenueData = [
+    { month: 'Jan', revenue: 450000, expenses: 320000 },
+    { month: 'Feb', revenue: 520000, expenses: 380000 },
+    { month: 'Mar', revenue: 480000, expenses: 350000 },
+    { month: 'Apr', revenue: 610000, expenses: 410000 },
+    { month: 'May', revenue: 590000, expenses: 430000 },
+    { month: 'Jun', revenue: 750000, expenses: 480000 },
+  ];
+
+  if (loading) {
+    return <div className="p-6">Loading dashboard...</div>;
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -79,14 +72,14 @@ export function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard 
           title="Total Revenue (YTD)" 
-          value="$3.4M" 
+          value={`$${(totalRevenue / 1000000).toFixed(1)}M`} 
           change={+12.5} 
           icon={Wallet} 
           trend="up" 
         />
         <KPICard 
           title="Active Projects" 
-          value="14" 
+          value={activeProjects.toString()} 
           change={+2} 
           icon={HardHat} 
           trend="up" 
@@ -94,15 +87,15 @@ export function Dashboard() {
         />
         <KPICard 
           title="Budget Variance" 
-          value="-$42.5k" 
+          value={`$${((totalBudget - totalSpent) / 1000).toFixed(0)}k`} 
           change={-3.2} 
           icon={TrendingUp} 
-          trend="down" 
-          suffix="under budget"
+          trend={totalSpent > totalBudget ? "down" : "up"} 
+          suffix={totalSpent < totalBudget ? "under budget" : "over budget"}
         />
         <KPICard 
-          title="Critical RFIs" 
-          value="5" 
+          title="Delayed Projects" 
+          value={delayedProjects.toString()} 
           change={+1} 
           icon={AlertTriangle} 
           trend="down" 
@@ -136,12 +129,12 @@ export function Dashboard() {
           </div>
           
           <div className="flex-1 flex flex-col gap-4">
-            {activeProjects.map((project) => (
+            {projects.slice(0, 3).map((project) => (
               <div key={project.id} className="p-3 border border-slate-800/50 rounded-lg bg-[#09090B] hover:bg-slate-800/50 transition-colors">
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <h3 className="text-sm font-semibold text-slate-200">{project.name}</h3>
-                    <p className="text-xs text-slate-400">{project.client}</p>
+                    <p className="text-xs text-slate-400">{project.clientId}</p>
                   </div>
                   <span className={cn(
                     "text-xs px-2 py-1 rounded-full font-medium",
